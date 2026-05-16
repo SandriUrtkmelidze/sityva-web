@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  />
+
+  <title>Word Puzzle Game</title>
+
+  <!-- Fonts -->
+
+  <!-- Main CSS -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+<!-- =====================================================
+     HOME SCREEN
+====================================================== -->
+<section id="home" class="screen active">
+
+  <h1>სიტყვა-სიტყვა</h1>
+
+  <p>აირჩიე მოთხრობა</p>
+
+  <div id="story-list"></div>
+
+  <p class="author-text">
+    მოთხრობების ავტორი — იაკობ გოგებაშვილი
+  </p>
+
+</section>
+
+  <!-- =====================================================
+     INSTRUCTIONS SCREEN
+====================================================== -->
+<section id="instructions" class="screen">
+
+  <p class="instructions-title">
+  ააწყვე მოთხრობა სიტყვების
+  სწორად დალაგებით
+</p>
+
+<ol
+  class="instructions-list"
+  style="list-style: decimal; padding-left: 40px;"
+>
+
+  <li style="margin-bottom: 20px;">
+    გაეცანი მოცემულ სიტყვებს და დაიწყე
+    მათი ჩასმა ცარიელ უჯრებში.
+  </li>
+
+  <li style="margin-bottom: 20px;">
+    საორიენტაციოდ, მოთხრობის ზოგი სიტყვა
+    უკვე გახსნილია.
+  </li>
+
+  <li style="margin-bottom: 20px;">
+    სიტყვის გახსნა შენც შეგიძლია
+    ცარიელ უჯრაზე თითის დაჭერით.
+  </li>
+
+  <li style="margin-bottom: 20px;">
+    სწორად გამოცნობილი სიტყვა გამოჩნდება ყვითლად.
+  </li>
+
+  <li style="margin-bottom: 20px;">
+    თამაშის პროგრესი გამოჩნდება ვარდისფერ ზოლში.
+  </li>
+
+
+</ol>
+
+  <div class="buttons">
+
+    <button id="start-btn">
+      დაწყება
+    </button>
+
+  </div>
+
+</section>
+
+  <!-- =====================================================
+       GAME SCREEN
+  ====================================================== -->
+  <section id="game" class="screen">
+
+    <!-- =================================================
+         TOP RIBBON
+    ================================================== -->
+    <div class="game-header">
+
+      <!-- Back Button -->
+      <button
+        id="back-home-2"
+        class="nav-btn"
+        aria-label="Back"
+      >
+        <svg
+          class="icon-triangle-left"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <polygon points="5.5,11 16.5,3 16.5,19"></polygon>
+        </svg>
+      </button>
+
+      <!-- Progress -->
+      <div class="progress-container">
+        <div
+          id="progress-bar"
+          class="progress-bar"
+        ></div>
+      </div>
+
+      <!-- Instructions Button -->
+      <button
+        id="show-instructions"
+        class="nav-btn"
+        aria-label="Instructions"
+      >
+        i
+      </button>
+
+    </div>
+
+    <!-- =================================================
+         SENTENCE AREA
+    ================================================== -->
+    <div
+      id="sentence-area"
+      class="sentence-area"
+    ></div>
+
+    <!-- =================================================
+         WORD BANK
+    ================================================== -->
+    <div
+      id="word-bank"
+      class="word-bank expanded"
+    >
+
+      <!-- Collapse Header -->
+      <div class="wordbank-header">
+
+        <button
+          id="toggle-bank"
+          class="nav-btn bank-toggle"
+          aria-label="Toggle word bank"
+        >
+          <svg
+            class="icon-triangle-down"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <polygon points="12,18 4,6 20,6"></polygon>
+          </svg>
+        </button>
+
+      </div>
+
+      <!-- Word Grid -->
+      <div
+        id="word-grid"
+        class="word-grid"
+      ></div>
+
+    </div>
+  </section>
+
+  <!-- =====================================================
+       INSTRUCTIONS MODAL
+  ====================================================== -->
+  <div
+    id="modal-instructions"
+    class="modal hidden"
+  >
+
+    <div class="modal-box">
+
+      <h2>ინსტრუქცია</h2>
+
+      <p>
+        ააწყვე მოთხრობა სიტყვების სწორად დალაგებით.
+      </p>
+
+      <p>
+        ცარიელ უჯრაზე დაჭერით, ასევე, შეგიძლია სიტყვის გახსნა
+      </p>
+
+      <button id="continue-btn">
+        თამაშის გაგრძელება
+      </button>
+
+    </div>
+  </div>
+
+  <!-- =====================================================
+       OPEN WORD POPUP
+  ====================================================== -->
+  <div
+    id="open-popup"
+    class="popup hidden"
+  >
+
+    <div class="popup-box">
+
+      <p>
+        Do you want to open this word?
+      </p>
+
+      <div class="popup-buttons">
+
+        <button id="confirm-open">
+          Yes
+        </button>
+
+        <button id="cancel-open">
+          Cancel
+        </button>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Main JavaScript -->
+  <script src="script.js"></script>
+
+</body>
+</html>
