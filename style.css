@@ -36,19 +36,20 @@ body {
   background: #252746;
   color: #fff;
 
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
 .screen {
   display: none !important;
 
-  position: absolute;
+  position: fixed;
 
-  top: 0;
-  left: 0;
+  inset: 0;
 
   width: 100%;
-  height: 100%;
+  height: 100dvh;
+
+  overflow: hidden;
 
   padding-bottom: var(--safe-bottom);
   padding-left: var(--safe-left);
@@ -391,7 +392,7 @@ body {
 
   transition: height 0.35s ease-in-out;
 
-  overflow: hidden;
+  overflow: clip;
 
   border-top: 2px solid #6955b0;
 }
@@ -478,6 +479,8 @@ body {
   word-break: break-word;
 
   overflow: hidden;
+
+  touch-action: none;
 }
 
 .word:hover {
@@ -617,13 +620,15 @@ body {
 /* Firefox */
 .sentence-area,
 .word-grid {
-  scrollbar-width: none;
-}
+  overflow-y: auto;
 
-/* IE / Old Edge */
-.sentence-area,
-.word-grid {
+  scrollbar-width: none;
+
   -ms-overflow-style: none;
+
+  -webkit-overflow-scrolling: touch;
+
+  touch-action: pan-y;
 }
 
 @media (max-width: 768px) {
