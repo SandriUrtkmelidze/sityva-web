@@ -771,8 +771,6 @@ confirmOpen.addEventListener("click", () => {
 
   cell.classList.add("revealed");
 
-  cell.addEventListener("dragstart", onSlotDragStart);
-
   placedWords[openTargetIndex] = correctWord;
 
   openedIndices.add(openTargetIndex);
@@ -866,14 +864,11 @@ function loadStory(id) {
     cell.classList.add("correct");
   }
 
-  cell.addEventListener(
-    "dragstart",
-    onSlotDragStart
-  );
 }
 
-      cell.addEventListener("click", () => {
+cell.addEventListener("click", () => {
 
+  // EMPTY SLOT
   if (cell.dataset.empty === "true") {
 
     if (selectedWord) {
@@ -885,6 +880,35 @@ function loadStory(id) {
       openTargetIndex = index;
 
       popup.classList.remove("hidden");
+    }
+
+  } else {
+
+    // SLOT ALREADY HAS WORD
+    const existingWord = placedWords[index];
+
+    if (existingWord) {
+
+      if (selectedWordEl) {
+        selectedWordEl.classList.remove("selected");
+      }
+
+      selectedWord = existingWord;
+      selectedWordEl = null;
+
+      delete placedWords[index];
+
+      cell.textContent = "";
+
+      cell.dataset.empty = "true";
+
+      cell.classList.remove("correct");
+
+      refreshBankVisuals();
+
+      updateProgress();
+
+      saveNow();
     }
   }
 });
@@ -950,6 +974,13 @@ function selectWord(word, el) {
     return;
   }
 
+  if (selectedWordEl === el) {
+
+    clearSelectedWord();
+
+    return;
+  }
+
   if (selectedWordEl) {
     selectedWordEl.classList.remove("selected");
   }
@@ -958,6 +989,7 @@ function selectWord(word, el) {
   selectedWordEl = el;
 
   el.classList.add("selected");
+
 }
 
 
@@ -982,8 +1014,15 @@ function placeWordIntoSlot(targetIndex) {
 
   if (!targetCell) return;
 
-  if (targetCell.dataset.empty === "false") {
-    return;
+  // IF SLOT ALREADY HAS WORD
+  if (placedWords[targetIndex]) {
+
+    const oldWord = placedWords[targetIndex];
+
+    // return old word back visually
+    delete placedWords[targetIndex];
+
+    refreshBankVisuals();
   }
 
   targetCell.textContent = selectedWord;
@@ -991,6 +1030,8 @@ function placeWordIntoSlot(targetIndex) {
   targetCell.dataset.empty = "false";
 
   placedWords[targetIndex] = selectedWord;
+
+  targetCell.classList.remove("correct");
 
   if (correctMap[targetIndex] === selectedWord) {
 
@@ -1038,7 +1079,7 @@ function refreshBankVisuals() {
       } else {
 
         el.classList.remove("faded");
-        
+
       }
     });
   });
