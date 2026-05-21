@@ -814,6 +814,8 @@ toggleBankBtn.addEventListener("click", () => {
 // === LOAD STORY ======================================================
 // ====================================================================
 
+wordGrid.addEventListener("click", handleBankReturn);
+
 function loadStory(id) {
   const story = stories[id];
   selectedStory = id;
@@ -868,6 +870,7 @@ function loadStory(id) {
 
 }
 
+
 cell.addEventListener("click", () => {
 
   // EMPTY SLOT
@@ -886,6 +889,12 @@ cell.addEventListener("click", () => {
 
   } else {
 
+
+      // DO NOT MOVE REVEALED WORDS
+  if (cell.classList.contains("revealed")) {
+    return;
+  }
+
     // SLOT ALREADY HAS WORD
     const existingWord = placedWords[index];
 
@@ -895,12 +904,15 @@ cell.addEventListener("click", () => {
         selectedWordEl.classList.remove("selected");
       }
 
-      selectedWord = existingWord;
-      selectedWordEl = null;
+      clearSelectedWord();
 
-      selectWord(existingWord, cell);
+selectedWord = existingWord;
 
 selectedSourceIndex = index;
+
+cell.classList.add("selected");
+
+selectedWordEl = cell;
     }
   }
 });
@@ -954,6 +966,42 @@ selectedSourceIndex = index;
   refreshBankVisuals();
 
   updateProgress();
+}
+
+function handleBankReturn(e) {
+
+  // only empty bank area
+  if (e.target.classList.contains("word")) return;
+
+  // must come from sentence slot
+  if (
+    selectedWord &&
+    selectedSourceIndex !== null
+  ) {
+
+    const oldCell = sentenceArea.querySelector(
+      `.sentence-cell[data-index="${selectedSourceIndex}"]`
+    );
+
+    if (oldCell) {
+
+      delete placedWords[selectedSourceIndex];
+
+      oldCell.textContent = "";
+
+      oldCell.dataset.empty = "true";
+
+      oldCell.classList.remove("correct");
+    }
+
+    refreshBankVisuals();
+
+    updateProgress();
+
+    saveNow();
+
+    clearSelectedWord();
+  }
 }
 
 // ====================================================================

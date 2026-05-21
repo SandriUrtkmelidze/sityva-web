@@ -511,6 +511,11 @@ body {
   opacity: 0.4;
 }
 
+.word.selected,
+.sentence-cell.selected {
+  background: #5f82ff !important;
+}
+
 .word.selected {
   background: #6f8cff;
 
