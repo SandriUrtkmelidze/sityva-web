@@ -68,7 +68,7 @@ function loadSave() {
   if (!selectedStory) return;
 
   const raw = localStorage.getItem(
-    `story-${selectedStory.title}`
+    `story-${selectedStory}`
   );
 
   if (!raw) return;
