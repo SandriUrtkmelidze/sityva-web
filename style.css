@@ -511,6 +511,14 @@ body {
   opacity: 0.4;
 }
 
+.word.selected {
+  background: #6f8cff;
+
+  transform: scale(1.04);
+
+  box-shadow: 0 0 10px rgba(111, 140, 255, 0.5);
+}
+
 /* =========================================================
    MODAL
 ========================================================= */
@@ -643,6 +651,12 @@ body {
   scrollbar-width: none;
 
   -ms-overflow-style: none;
+}
+
+.word-bank,
+.sentence-area,
+.word-grid {
+  min-width: 0;
 }
 
 @media (max-width: 768px) {

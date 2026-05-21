@@ -26,15 +26,14 @@ const correctSound =
   new Audio("./sounds/correct.wav");
 
 // === STATE ===
+let selectedWord = null;
+let selectedWordEl = null;
+
 let selectedStory = null;
 let hiddenIndices = [];
 let correctMap = {};
 let placedWords = {};
 let openedIndices = new Set();
-
-let draggedSource = null;
-let draggedIndex = null;
-let draggedText = null;
 
 let openTargetIndex = null;
 let bankCollapsed = false;
@@ -772,8 +771,6 @@ confirmOpen.addEventListener("click", () => {
 
   cell.classList.add("revealed");
 
-  cell.draggable = true;
-
   cell.addEventListener("dragstart", onSlotDragStart);
 
   placedWords[openTargetIndex] = correctWord;
@@ -835,10 +832,6 @@ function loadStory(id) {
 
   loadSave();
 
-  draggedSource = null;
-  draggedIndex = null;
-  draggedText = null;
-
   bankWordElsByText = {};
 
   bankCollapsed = false;
@@ -869,8 +862,6 @@ function loadStory(id) {
 
   cell.dataset.empty = "false";
 
-  cell.draggable = true;
-
   if (correctMap[index] === placedWords[index]) {
     cell.classList.add("correct");
   }
@@ -882,21 +873,21 @@ function loadStory(id) {
 }
 
       cell.addEventListener("click", () => {
-        if (cell.dataset.empty === "true") {
-          openTargetIndex = index;
-          popup.classList.remove("hidden");
-        }
-      });
 
-      cell.addEventListener("dragover", e =>
-        e.preventDefault()
-      );
+  if (cell.dataset.empty === "true") {
 
-      cell.addEventListener("drop", e => {
-        e.preventDefault();
+    if (selectedWord) {
 
-        onDropToSlot(index);
-      });
+      placeWordIntoSlot(index);
+
+    } else {
+
+      openTargetIndex = index;
+
+      popup.classList.remove("hidden");
+    }
+  }
+});
 
     } else {
 
@@ -931,9 +922,9 @@ function loadStory(id) {
 
     el.textContent = text;
 
-    el.draggable = true;
-
-    el.addEventListener("dragstart", onBankDragStart);
+    el.addEventListener("click", () => {
+    selectWord(text, el);
+    });
 
     if (!bankWordElsByText[text]) {
       bankWordElsByText[text] = [];
@@ -944,119 +935,71 @@ function loadStory(id) {
     wordGrid.appendChild(el);
   });
 
-  // ALLOW RETURNING WORDS
-  wordGrid.addEventListener("dragover", e =>
-    e.preventDefault()
-  );
-
-  wordGrid.addEventListener("drop", e => {
-    e.preventDefault();
-
-    onDropToBank();
-  });
-
   refreshBankVisuals();
 
   updateProgress();
 }
 
-
 // ====================================================================
-// === DRAG & DROP =====================================================
+// === TAP SYSTEM ======================================================
 // ====================================================================
 
-function onBankDragStart(e) {
-  if (e.target.classList.contains("faded")) {
-    return e.preventDefault();
+function selectWord(word, el) {
+
+  if (el.classList.contains("faded")) {
+    return;
   }
 
-  draggedSource = "bank";
-
-  draggedIndex = null;
-
-  draggedText = e.target.dataset.text;
-}
-
-function onSlotDragStart(e) {
-  const cell = e.target;
-
-  if (cell.dataset.empty === "true") {
-    return e.preventDefault();
+  if (selectedWordEl) {
+    selectedWordEl.classList.remove("selected");
   }
 
-  draggedSource = "slot";
+  selectedWord = word;
+  selectedWordEl = el;
 
-  draggedIndex = parseInt(cell.dataset.index);
-
-  draggedText = cell.textContent;
+  el.classList.add("selected");
 }
 
-function onDropToSlot(targetIndex) {
-  if (!draggedText) return;
+
+function clearSelectedWord() {
+
+  if (selectedWordEl) {
+    selectedWordEl.classList.remove("selected");
+  }
+
+  selectedWord = null;
+  selectedWordEl = null;
+}
+
+
+function placeWordIntoSlot(targetIndex) {
+
+  if (!selectedWord) return;
 
   const targetCell = sentenceArea.querySelector(
     `.sentence-cell[data-index="${targetIndex}"]`
   );
 
-  if (!targetCell ||
-      !hiddenIndices.includes(targetIndex)) {
-    resetDragState();
-    return;
-  }
-
-  if (draggedSource === "slot" &&
-      draggedIndex === targetIndex) {
-    resetDragState();
-    return;
-  }
+  if (!targetCell) return;
 
   if (targetCell.dataset.empty === "false") {
-    placedWords[targetIndex] = null;
+    return;
   }
 
-  if (draggedSource === "slot" &&
-      draggedIndex !== null) {
-
-    const fromCell = sentenceArea.querySelector(
-      `.sentence-cell[data-index="${draggedIndex}"]`
-    );
-
-    if (fromCell) {
-      fromCell.textContent = "";
-
-      fromCell.dataset.empty = "true";
-
-      fromCell.draggable = false;
-
-      fromCell.classList.remove("revealed");
-
-      fromCell.classList.remove("correct");
-    }
-
-    placedWords[draggedIndex] = null;
-
-    openedIndices.delete(draggedIndex);
-  }
-
-if (correctMap[targetIndex] === draggedText) {
-  correctSound.currentTime = 0;
-  correctSound.play();
-
-  targetCell.classList.add("correct");
-}
-
-  targetCell.textContent = draggedText;
+  targetCell.textContent = selectedWord;
 
   targetCell.dataset.empty = "false";
 
-  targetCell.draggable = true;
+  placedWords[targetIndex] = selectedWord;
 
-  targetCell.addEventListener(
-    "dragstart",
-    onSlotDragStart
-  );
+  if (correctMap[targetIndex] === selectedWord) {
 
-  placedWords[targetIndex] = draggedText;
+    correctSound.currentTime = 0;
+
+    correctSound.play();
+
+    targetCell.classList.add("correct");
+  }
 
   refreshBankVisuals();
 
@@ -1064,49 +1007,8 @@ if (correctMap[targetIndex] === draggedText) {
 
   saveNow();
 
-  resetDragState();
+  clearSelectedWord();
 }
-
-function onDropToBank() {
-  if (draggedSource !== "slot") {
-    return resetDragState();
-  }
-
-  const fromCell = sentenceArea.querySelector(
-    `.sentence-cell[data-index="${draggedIndex}"]`
-  );
-
-  if (fromCell) {
-    fromCell.textContent = "";
-
-    fromCell.dataset.empty = "true";
-
-    fromCell.draggable = false;
-
-    fromCell.classList.remove("revealed");
-  }
-
-  placedWords[draggedIndex] = null;
-
-  openedIndices.delete(draggedIndex);
-
-  refreshBankVisuals();
-
-  updateProgress();
-
-  saveNow();
-
-  resetDragState();
-}
-
-function resetDragState() {
-  draggedSource = null;
-
-  draggedIndex = null;
-
-  draggedText = null;
-}
-
 
 // ====================================================================
 // === DUPLICATE WORD FIX ==============================================
@@ -1133,13 +1035,10 @@ function refreshBankVisuals() {
 
         el.classList.add("faded");
 
-        el.draggable = false;
-
       } else {
 
         el.classList.remove("faded");
-
-        el.draggable = true;
+        
       }
     });
   });
