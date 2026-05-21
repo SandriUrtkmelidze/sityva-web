@@ -26,6 +26,8 @@ const correctSound =
   new Audio("./sounds/correct.wav");
 
 // === STATE ===
+let selectedSourceIndex = null;
+
 let selectedWord = null;
 let selectedWordEl = null;
 
@@ -896,19 +898,9 @@ cell.addEventListener("click", () => {
       selectedWord = existingWord;
       selectedWordEl = null;
 
-      delete placedWords[index];
+      selectWord(existingWord, cell);
 
-      cell.textContent = "";
-
-      cell.dataset.empty = "true";
-
-      cell.classList.remove("correct");
-
-      refreshBankVisuals();
-
-      updateProgress();
-
-      saveNow();
+selectedSourceIndex = index;
     }
   }
 });
@@ -1001,6 +993,8 @@ function clearSelectedWord() {
 
   selectedWord = null;
   selectedWordEl = null;
+
+  selectedSourceIndex = null;
 }
 
 
@@ -1014,17 +1008,34 @@ function placeWordIntoSlot(targetIndex) {
 
   if (!targetCell) return;
 
-  // IF SLOT ALREADY HAS WORD
+  // REMOVE WORD FROM OLD SLOT
+  if (selectedSourceIndex !== null) {
+
+    const oldCell = sentenceArea.querySelector(
+      `.sentence-cell[data-index="${selectedSourceIndex}"]`
+    );
+
+    if (oldCell) {
+
+      delete placedWords[selectedSourceIndex];
+
+      oldCell.textContent = "";
+
+      oldCell.dataset.empty = "true";
+
+      oldCell.classList.remove("correct");
+    }
+  }
+
+  // IF TARGET SLOT ALREADY HAS WORD
   if (placedWords[targetIndex]) {
 
-    const oldWord = placedWords[targetIndex];
-
-    // return old word back visually
     delete placedWords[targetIndex];
 
     refreshBankVisuals();
   }
 
+  // PLACE NEW WORD
   targetCell.textContent = selectedWord;
 
   targetCell.dataset.empty = "false";
