@@ -39,6 +39,10 @@ body {
   overflow-x: hidden;
 }
 
+button {
+  font-family: "BPG Algeti", sans-serif;
+}
+
 .screen {
   display: none !important;
 
@@ -155,29 +159,13 @@ body {
 
   justify-content: center;
 
-  align-items: flex-start;
+  align-items: center;
+
+  text-align: center;
 
   padding: 24px;
 
   gap: 16px;
-}
-
-#instructions .buttons {
-  margin-top: 16px;
-}
-
-#instructions button {
-  margin: 8px;
-
-  padding: 10px 20px;
-
-  border: none;
-  border-radius: 6px;
-
-  background: #47497a;
-  color: #fff;
-
-  cursor: pointer;
 }
 
 #instructions button:hover {
@@ -185,9 +173,7 @@ body {
 }
 
 .instructions-list {
-  display: block;
-
-  list-style: decimal;
+  list-style: disc;
 
   list-style-position: outside;
 
@@ -197,11 +183,27 @@ body {
 }
 
 .instructions-list li {
-  display: list-item;
-
   margin-bottom: 20px;
 
   line-height: 1.6;
+}
+
+/* Intro screen */
+#instructions .instructions-list {
+  max-width: 500px;
+
+  width: 100%;
+
+  margin: 12px auto 0;
+
+  text-align: left;
+}
+
+/* Popup */
+.modal-box .instructions-list {
+  width: 100%;
+
+  text-align: left;
 }
 
 .instructions-title {
@@ -217,8 +219,6 @@ body {
 }
 
 #instructions .buttons {
-  width: 100%;
-
   display: flex;
 
   justify-content: center;
@@ -229,7 +229,23 @@ body {
 
   padding: 14px 36px;
 
+  border: none;
+
   border-radius: 10px;
+
+  background: #47497a;
+
+  color: #fff;
+
+  font-family: "BPG Algeti", sans-serif;
+
+  cursor: pointer;
+
+  transition: background 0.2s ease;
+}
+
+#start-btn:hover {
+  background: #406f84;
 }
 
 /* =========================================================
