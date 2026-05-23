@@ -599,6 +599,18 @@ button {
   background: #406f84;
 }
 
+#continue-btn {
+  font-size: 20px;
+
+  padding: 14px 36px;
+
+  border-radius: 10px;
+}
+
+.modal-box button:hover {
+  background: #406f84;
+}
+
 /* =========================================================
    POPUP
 ========================================================= */
