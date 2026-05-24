@@ -837,10 +837,14 @@ if (placedWords[index]) {
   cell.dataset.empty = "false";
 
   if (openedIndices.has(index)) {
-    cell.classList.add("revealed");
-  }
 
-  if (correctMap[index] === placedWords[index]) {
+    cell.classList.add("revealed");
+  
+
+  } else if (
+    correctMap[index] === placedWords[index]
+  ) {
+
     cell.classList.add("correct");
   }
 
