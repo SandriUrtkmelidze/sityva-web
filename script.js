@@ -671,40 +671,7 @@ function shuffleArray(arr) {
 }
 
 
-// ====================================================================
-// === SAVE / LOAD =====================================================
-// ====================================================================
 
-function saveProgressForStory(id, data) {
-  localStorage.setItem(
-    "progress-story-" + id,
-    JSON.stringify(data)
-  );
-}
-
-function loadProgressForStory(id) {
-  const raw = localStorage.getItem(
-    "progress-story-" + id
-  );
-
-  if (!raw) return null;
-
-  try {
-    return JSON.parse(raw);
-  } catch {
-    return null;
-  }
-}
-
-function saveNow() {
-  if (!selectedStory) return;
-
-  saveProgressForStory(selectedStory, {
-    placedWords,
-    openedIndices: Array.from(openedIndices),
-    bankCollapsed
-  });
-}
 
 
 // ====================================================================
@@ -841,7 +808,7 @@ function loadStory(id) {
 
   bankWordElsByText = {};
 
-  bankCollapsed = false;
+  
 
   // BUILD CORRECT MAP FROM SENTENCE
   story.hidden.forEach(slotIndex => {
@@ -863,11 +830,15 @@ function loadStory(id) {
 
       cell.textContent = "";
 
-      if (placedWords[index]) {
+if (placedWords[index]) {
 
   cell.textContent = placedWords[index];
 
   cell.dataset.empty = "false";
+
+  if (openedIndices.has(index)) {
+    cell.classList.add("revealed");
+  }
 
   if (correctMap[index] === placedWords[index]) {
     cell.classList.add("correct");
@@ -968,9 +939,20 @@ selectedWordEl = cell;
     wordGrid.appendChild(el);
   });
 
+  wordBank.classList.toggle(
+    "collapsed",
+    bankCollapsed
+  );
+
+  wordBank.classList.toggle(
+    "expanded",
+    !bankCollapsed
+  );
+
   refreshBankVisuals();
 
   updateProgress();
+  
 }
 
 function handleBankReturn(e) {
