@@ -52,11 +52,12 @@ function saveNow() {
 
   const saveData = {
     placedWords,
-    openedIndices: [...openedIndices]
+    openedIndices: [...openedIndices],
+    bankCollapsed
   };
 
   localStorage.setItem(
-    `story-${selectedStory.title}`,
+    `story-${selectedStory}`,
     JSON.stringify(saveData)
   );
 }
@@ -83,6 +84,10 @@ function loadSave() {
     openedIndices = new Set(
       saveData.openedIndices
     );
+  }
+
+  if (saveData.bankCollapsed !== undefined) {
+    bankCollapsed = saveData.bankCollapsed;
   }
 }
 
